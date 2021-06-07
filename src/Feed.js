@@ -14,12 +14,13 @@ import { useSelector } from "react-redux";
 import { selectUser } from "./features/userSlice";
 
 function Feed() {
-	const user = useSelector(selectUser);
 	const [posttext, setPosttext] = useState("");
 	const [posts, setPosts] = useState([]);
+	const user = useSelector(selectUser);
 
 	useEffect(() => {
-		db.collection("posts")
+		const unsubscribe = db
+			.collection("posts")
 			.orderBy("timestamp", "desc")
 			.onSnapshot((snapshot) =>
 				setPosts(
@@ -29,7 +30,14 @@ function Feed() {
 					}))
 				)
 			);
+		return () => {
+			unsubscribe();
+		};
 	}, []);
+
+	const typePost = (e) => {
+		setPosttext(e.target.value);
+	};
 
 	const sendPost = (e) => {
 		e.preventDefault();
@@ -52,7 +60,7 @@ function Feed() {
 						<input
 							type="text"
 							value={posttext}
-							onChange={(e) => setPosttext(e.target.value)}
+							onChange={typePost}
 						/>
 						<button type="submit" onClick={sendPost}>
 							Send

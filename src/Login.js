@@ -14,17 +14,14 @@ export default function Login() {
 
 	const loginToApp = (e) => {
 		e.preventDefault();
-		console.log("login to app");
 		auth.signInWithEmailAndPassword(email, password)
 			.then((userAuth) => {
-				console.log("login done");
-				console.log(JSON.stringify(userAuth.user));
 				dispatch(
 					login({
 						email: userAuth.user.email,
 						uid: userAuth.user.uid,
 						displayName: userAuth.user.displayName,
-						photoUrl: userAuth.user.photoURL,
+						profileUrl: userAuth.user.photoURL,
 					})
 				);
 			})
@@ -33,10 +30,8 @@ export default function Login() {
 
 	const register = () => {
 		if (!name) {
-			return alert("Please enter a full name!");
+			return alert("Please enter a full name");
 		}
-		console.log("inside register ", email);
-		console.log("inside register ", password);
 
 		auth.createUserWithEmailAndPassword(email, password)
 			.then((userAuth) => {
@@ -46,14 +41,12 @@ export default function Login() {
 						photoURL: profilePic,
 					})
 					.then(() => {
-						console.log("user created userAuth");
-						console.log(JSON.stringify(userAuth.user));
 						dispatch(
 							login({
 								email: userAuth.user.email,
 								uid: userAuth.user.uid,
-								displayName: userAuth.user.name,
-								photoUrl: userAuth.user.photoUrl,
+								displayName: name,
+								photoURL: profilePic,
 							})
 						);
 					});
@@ -73,7 +66,7 @@ export default function Login() {
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					placeholder="Full name (required if registering)"
-					type="test"
+					type="text"
 				/>
 				<input
 					value={profilePic}
